@@ -64,15 +64,7 @@ public:
     }
     ~Thread(){
         stop();
-        if(_thread.joinable()){          
-            _state=State::TERMINATED;
-            {
-                std::lock_guard<std::mutex> lck(_mtx); 
-                _targets.push_front(nullptr);
-            }
-            _cv.notify_one();
-            _thread.join();
-        }
+        
         for(auto& runable : _targets){
                 if(runable!=nullptr){
                     delete runable;
@@ -124,9 +116,16 @@ public:
             return;
         }else{
             _finished=true; 
+        } 
+        {
+                std::lock_guard<std::mutex> lck(_mtx); 
+                _targets.push_front(nullptr);
+        } 
+        if(_thread.joinable()){          
+            _state=State::TERMINATED;
+            _cv.notify_one();
+            _thread.join();
         }
-        
-        
     }
 private:
     std::thread _thread;
