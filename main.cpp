@@ -64,6 +64,22 @@ public:
     }
     ~Thread(){
         stop();
+        if(_thread.joinable()){          
+            _state=State::TERMINATED;
+            {
+                std::lock_guard<std::mutex> lck(_mtx); 
+                _targets.push_front(nullptr);
+            }
+            _cv.notify_one();
+            _thread.join();
+        }
+        for(auto& runable : _targets){
+                if(runable!=nullptr){
+                    delete runable;
+                    runable=nullptr;
+                    cout << "\n--xxxxxxxxxxxxxxxxxxxxx--\n" << endl; 
+                }
+        }
     }
     void run() override
     {
@@ -87,7 +103,11 @@ public:
         }  
     }
     void start(Runable* target=nullptr){
-            if(target==nullptr){
+            if(_finished){
+                if(target!=nullptr){
+                    delete target;
+                    target=nullptr;
+                }
                 return;
             }
             cout << "\n--try...........--\n" << endl; 
@@ -100,23 +120,13 @@ public:
        
     }
     void stop(){
-        if(_thread.joinable()){   
+        if(_finished){
+            return;
+        }else{
             _finished=true; 
-            _state=State::TERMINATED;
-            {
-                std::lock_guard<std::mutex> lck(_mtx); 
-                _targets.push_front(nullptr);
-            }
-            _cv.notify_one();
-            _thread.join();
         }
-        for(auto& runable : _targets){
-                if(runable!=nullptr){
-                    delete runable;
-                    runable=nullptr;
-                    cout << "\n--xxxxxxxxxxxxxxxxxxxxx--\n" << endl; 
-                }
-        }
+        
+        
     }
 private:
     std::thread _thread;
