@@ -11,6 +11,7 @@
 #include "Runable.h"
 
 using namespace std;
+/*
 __attribute((constructor)) void before_main()  
 {  
     printf("main:%s/n",__FUNCTION__);  
@@ -19,7 +20,7 @@ __attribute((constructor)) void before_main()
 __attribute((destructor)) void after_main()  
 {  
     printf("main:%s/n",__FUNCTION__);  
-}
+}*/
 class Task:public Runable
 {
 public:
@@ -63,15 +64,7 @@ public:
         _state=State::NEW;
     }
     ~Thread(){
-        stop();
-        
-        for(auto& runable : _targets){
-                if(runable!=nullptr){
-                    delete runable;
-                    runable=nullptr;
-                    cout << "\n--xxxxxxxxxxxxxxxxxxxxx--\n" << endl; 
-                }
-        }
+ 
     }
     void run() override
     {
@@ -112,20 +105,12 @@ public:
        
     }
     void stop(){
-        if(_finished){
-            return;
-        }else{
-            _finished=true; 
-        } 
+        
         {
                 std::lock_guard<std::mutex> lck(_mtx); 
                 _targets.push_front(nullptr);
         } 
-        if(_thread.joinable()){          
-            _state=State::TERMINATED;
-            _cv.notify_one();
-            _thread.join();
-        }
+
     }
 private:
     std::thread _thread;
