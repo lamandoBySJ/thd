@@ -35,7 +35,7 @@ public:
     void run() override
     {
         cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 1\n" << endl;
-        this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 2\n" << endl;
         this_thread::sleep_for(std::chrono::seconds(1));
         cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 3\n" << endl;
@@ -155,7 +155,7 @@ int main()
     run();
   
    //thd.start(new Task);
-this_thread::sleep_for(std::chrono::seconds(10));
+    this_thread::sleep_for(std::chrono::seconds(10));
    
 
 
