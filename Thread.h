@@ -58,7 +58,7 @@ public:
         _finished(false)
     {
         _state=State::NEW;
-        
+        cout << "\n[---]~Thread:" << _sp.use_count() << "\n"<<endl;
        // if(_runable->_sp.use_count()>0){
             //_sp.reset();
        // }
@@ -71,44 +71,12 @@ public:
         }
 
         if( _sp.use_count()==2){
-            Runable* _runable=_sp.get();
-            _sp.reset();
-            if(_runable){
-                delete _runable;
-                _runable=nullptr;
-            }
+            _sp.~shared_ptr();
         }   
     }
-    void run() //override
+    void run() 
     {
-        
-        //auto p= Runable::_sp.lock();
-    
-            //std::cout<<"\n[>>>]Thread::run:" <<_sp.lock()->_sp.use_count() << "\n" << endl;
-          // _sp.lock()->run();
         _sp->run();
-        
-     
-         //  _runable->run();
-           // _sp.lock()->run();
-           // std::cout<<"[T]Thread::run NO:" <<_runable->_sp.use_count() << "\n" << endl;
-    
-       // _runable->run();
-        /*while(!_finished){
-            std::unique_lock<std::mutex> lck(_mtx);
-            //while(_targets.empty()){
-            //    _cv.wait(lck);
-           // }
-          // Runable* pTask = _targets.front();
-           
-           _targets.pop_front();
-           
-            cout << ">>>>>>>>>>>>>Thread::run start\n" << endl;
-      
-            cout << ">>>>>>>>>>>>>Thread::run finish\n" << endl;
-    
-   
-        }  */
     }
     void start(){
             if(_finished){
@@ -124,14 +92,7 @@ public:
             cout << "\n--sssssssssssssssssssssssssssssssssss--\n" << endl;            
        
     }
-    void stop(){
-        
-        {
-                //std::lock_guard<std::mutex> lck(_mtx); 
-                //_targets.push_front(nullptr);
-        } 
-
-    }
+ 
 private:
     std::thread _thread;
     const char* _name;
@@ -144,6 +105,7 @@ private:
     std::shared_ptr<Runable> _sp;
   
     std::atomic<bool> _finished;
+    std::mutex _mtx;
 };
 
 #endif

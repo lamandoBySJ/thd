@@ -43,15 +43,15 @@ void run(){
 
 int main()
 {
-   Task* task=new Task;
+    Task* task=new Task;
     Thread thd1(task,"thread_A");
-    //Thread thd2(task,"thread_B");
-    //Thread thd3(task,"thread_C");
-    //Thread thd4(task,"thread4");
-    //Thread thd5(task,"thread5");
-    //Thread thd6(task,"thread6");
-    //Thread thd7(task,"thread7");
-    //Thread thd8(task,"thread8");
+    Thread thd2(task,"thread_B");
+    Thread thd3(task,"thread_C");
+    Thread thd4(task,"thread_D");
+    Thread thd5(task,"thread_E");
+    Thread thd6(task,"thread_F");
+    Thread thd7(task,"thread_G");
+    Thread thd8(task,"thread_H");
 
 
     this_thread::sleep_for(std::chrono::seconds(6));
