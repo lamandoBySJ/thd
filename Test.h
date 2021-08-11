@@ -22,7 +22,7 @@ public:
         int i=10;
         while(--i){
              cout << "i:" << i << "\n" <<endl;
-                 this_thread::sleep_for(std::chrono::seconds(1));
+               //  std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
   std::string _s;

@@ -1,130 +1,34 @@
-#include <string>
-#include <stdio.h>
-#include <iostream>
-#include <thread>
+
 #include <list>
 #include <mutex>
 #include <memory>
-#include <atomic>
-#include <condition_variable>
+
+
 #include "Test.h"
 #include "Runable.h"
+#include "ThreadGroup.h"
+#include "Thread.h"
 
 using namespace std;
-/*
+struct RunableException : public exception
+{
+  const char * what () const throw ()
+  {
+    return "pointer parameter runable can't be nullptr";
+  }
+};
+
 __attribute((constructor)) void before_main()  
 {  
-    printf("main:%s/n",__FUNCTION__);  
+    printf("\n[ main:%s ]\n",__FUNCTION__);  
 }  
-  
-__attribute((destructor)) void after_main()  
+
+__attribute__((destructor)) void after_main()  
 {  
-    printf("main:%s/n",__FUNCTION__);  
-}*/
-class Task:public Runable
-{
-public:
-    Task(const char* name="def"):_name(name)
-    {
-
-    }
-~Task(){
-    cout<<_name << "\n[ ~Task ]\n" << endl;
-    this_thread::sleep_for(std::chrono::seconds(1));
+     printf("\n[ main:%s ]\n",__FUNCTION__);  
+     this_thread::sleep_for(std::chrono::seconds(3));
 }
-    void run() override
-    {
-        cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 1\n" << endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 2\n" << endl;
-        this_thread::sleep_for(std::chrono::seconds(1));
-        cout << ">>>>>>>>>>>>> "<< _name <<" Thread::run 3\n" << endl;
-        this_thread::sleep_for(std::chrono::seconds(1));
-    }
-private:
-    std::string _name;
-};
-enum class State : char{
-        NEW,
-        RUNNABLE,
-        BLOCKED,
-        WAITING,
-        TIMED_WAITING,
-        TERMINATED
-};
-class Thread:public Runable
-{
-public:
-    
-public:
-    Thread():_thread(&Thread::run,this),_finished(false){
-        _state=State::NEW;
-    }
-    Thread(Runable* runable):_thread(&Thread::run,this),_finished(false){
-        _state=State::NEW;
-    }
-    ~Thread(){
- 
-    }
-    void run() override
-    {
-        cout << ">>>>>>>>>>>>>Thread::run crested\nwaiting startup...\n" << endl;
-        while(!_finished){
-            std::unique_lock<mutex> lck(_mtx);
-            while(_targets.empty()){
-                _cv.wait(lck);
-            }
-           Runable* pTask = _targets.front();
-           
-           _targets.pop_front();
-            if(pTask==nullptr){
-                continue;
-            }
-            cout << ">>>>>>>>>>>>>Thread::run start\n" << endl;
-            pTask->run();
-            cout << ">>>>>>>>>>>>>Thread::run finish\n" << endl;
-            delete pTask;
-            pTask=nullptr;
-        }  
-    }
-    void start(Runable* target=nullptr){
-            if(_finished){
-                if(target!=nullptr){
-                    delete target;
-                    target=nullptr;
-                }
-                return;
-            }
-            cout << "\n--try...........--\n" << endl; 
-            {
-                std::lock_guard<std::mutex> lck(_mtx); 
-                _targets.push_back(target);
-            }
-            _cv.notify_one(); 
-            cout << "\n--sssssssssssssssssssssssssssssssssss--\n" << endl;            
-       
-    }
-    void stop(){
-        
-        {
-                std::lock_guard<std::mutex> lck(_mtx); 
-                _targets.push_front(nullptr);
-        } 
-
-    }
-private:
-    std::thread _thread;
-    std::list<Runable*> _targets;
-   // std::shared_ptr<Runable> _sp;
-    //std::atomic<bool> _blocked;
-    std::atomic<bool> _finished;
-    std::mutex _mtx;
-    std::condition_variable _cv;
-    std::atomic<State> _state;
-    //State _state;
-};
-Test t;
-Thread thd1;
+//Thread thd1;
 void run(){
     /*Runable* r=new Task;
     Thread thd1(r);
@@ -135,28 +39,23 @@ void run(){
     thd2.start();
     thd2.start();
     */
-Runable* r=new Task;
-Runable* r1=new Task("Aaaaaaaaaa");
-Runable* r2=new Task("BBbBBBbbbB");
-
-thd1.start(r);
-this_thread::sleep_for(std::chrono::seconds(1));
-thd1.start(r1);
-//thd1.start(r2);
-thd1.stop();
-this_thread::sleep_for(std::chrono::seconds(2));
-thd1.start(r2);
-//this_thread::sleep_for(std::chrono::seconds(2));
 }
 
 int main()
 {
+   Task* task=new Task;
+    Thread thd1(task,"thread_A");
+    //Thread thd2(task,"thread_B");
+    //Thread thd3(task,"thread_C");
+    //Thread thd4(task,"thread4");
+    //Thread thd5(task,"thread5");
+    //Thread thd6(task,"thread6");
+    //Thread thd7(task,"thread7");
+    //Thread thd8(task,"thread8");
 
-    run();
-  
+
+    this_thread::sleep_for(std::chrono::seconds(6));
    //thd.start(new Task);
-    this_thread::sleep_for(std::chrono::seconds(10));
-   
 
 
 
