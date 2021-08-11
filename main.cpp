@@ -10,13 +10,7 @@
 #include "Thread.h"
 
 using namespace std;
-struct RunableException : public exception
-{
-  const char * what () const throw ()
-  {
-    return "pointer parameter runable can't be nullptr";
-  }
-};
+
 
 __attribute((constructor)) void before_main()  
 {  
@@ -26,8 +20,9 @@ __attribute((constructor)) void before_main()
 __attribute__((destructor)) void after_main()  
 {  
      printf("\n[ main:%s ]\n",__FUNCTION__);  
-     this_thread::sleep_for(std::chrono::seconds(3));
+      this_thread::sleep_for(std::chrono::seconds(1));
 }
+
 //Thread thd1;
 void run(){
     /*Runable* r=new Task;
@@ -53,8 +48,22 @@ int main()
     Thread thd7(task,"thread_G");
     Thread thd8(task,"thread_H");
 
-
-    this_thread::sleep_for(std::chrono::seconds(6));
+    thd1.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd2.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd3.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd4.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd5.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd6.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd7.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd8.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
    //thd.start(new Task);
 
 
