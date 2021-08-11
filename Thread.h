@@ -53,6 +53,11 @@ class Thread
 public:
     
 public:
+    /** @brief Test for non-letter.
+    * Test the character @p ch in the global locale.
+    * @param ch the character to test
+    * @return true if @p ch is not a letter
+    */
     Thread()=delete;
     Thread(Runable* runable=nullptr,const char* name="def_thread"):
         _sp(runable->sp()),
