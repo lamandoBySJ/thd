@@ -33,31 +33,35 @@ public:
     }
     void run() override
     {
-        _mtx.lock();
-        static std::atomic<int> i(30);
-        cout << "\n---" << "Run Task: "<< _name << " ,i: " << --i << "---\n"<<endl;
-        _mtx.unlock();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        while(i>0){
+           _mtx.lock();
+            --i;
+            cout << "\n---" << "Run Task: "<< _name << " ,i: " << --i << "---\n"<<endl;
+            _mtx.unlock();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        cout << "\n---" << "Task: DONE---\n"<<endl;
     }
 
 private:
     std::string _name;
     std::mutex _mtx;
+    std::atomic<int> i{30};
 };
-class Thread//:public Runable
+class Thread
 {
 public:
     
 public:
     Thread()=delete;
     Thread(Runable* runable=nullptr,const char* name="def_thread"):
-        _sp(runable->_sp),
+        _sp(runable->sp()),
         _name(name),
         _thread(&Thread::run,this),
         _finished(false),
         _state(State::WAITING)
         {
-            //cout << "\n[+++]Thread:" << _sp->shared_ptr_use_count() << "\n"<<endl;
+            
         }
     ~Thread(){
         cout << "\n[---]~Thread:" << _sp.use_count() << "\n"<<endl;

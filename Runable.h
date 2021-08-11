@@ -16,14 +16,14 @@ class Runable
 {
 public:
     Runable()=default;
-    Runable(Runable* runable):_sp(runable)
-    {
-       
-    }
-    virtual ~Runable(){
-        std::cout << "\n--------------------------------[ ~Runable ]:" << _sp.use_count() << "\n"<<std::endl;
-    }
+    Runable(Runable* runable):_sp(runable){}
+    virtual ~Runable(){}
     virtual void run()=0;
+
+    inline std::shared_ptr<Runable>& sp(){
+        return _sp;
+    }
+private:
     std::shared_ptr<Runable> _sp;
     std::mutex _mtx;
 };

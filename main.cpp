@@ -66,7 +66,22 @@ int main()
     this_thread::sleep_for(std::chrono::milliseconds(100));
    //thd.start(new Task);
 
-
-
+    this_thread::sleep_for(std::chrono::seconds(6));
+    thd1.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd2.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd3.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd4.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd5.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd6.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd7.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
+    thd8.start();
+    this_thread::sleep_for(std::chrono::milliseconds(100));
     return 0;
 }
