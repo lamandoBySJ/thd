@@ -6,7 +6,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <ctime>
-#include <conio.h>
+//#include <conio.h>
 #include<iostream>
 #include<cstring>
 

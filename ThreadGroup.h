@@ -37,17 +37,22 @@ public:
             }
                 
             this->run();
-
+            
+            std::unique_lock<std::mutex> lck{_mtx};
+            --_nthreads;
+            
         }
     }
     virtual void run()=0;
     void add(){
-
-        if(_nthreads==_threads.size()){
-            _threads.emplace_back(std::shared_ptr<std::thread>(new std::thread(&ThreadGroup::run_thread_group,this)));
-            ++_nthreads;
+        {
+            std::lock_guard<std::mutex> lck(_mtx_thread);
+            if(_nthreads==_threads.size()){
+                _threads.emplace_back(std::shared_ptr<std::thread>(new std::thread(&ThreadGroup::run_thread_group,this)));
+                ++_nthreads;
+            }
+            
         }
-        
         {
             std::lock_guard<std::mutex> lck(_mtx);
             _tasks.emplace(1);
@@ -58,7 +63,7 @@ public:
     {
          _finished=true;
          static int cnt=0;
-
+         std::lock_guard<std::mutex> lck(_mtx_thread);
          for(auto& thd:_threads){
              if(thd->joinable()){
                 _cv.notify_all();
@@ -68,7 +73,6 @@ public:
     }
     //Runable* _target;
     const char* _name;
-    
     //std::atomic<State> _state{State::WAITING};
     std::atomic<int> _nthreads{0};
     std::atomic<int> _nUnstartedThreads{0};
@@ -76,6 +80,7 @@ public:
     std::condition_variable _cv;
 private:
     std::mutex _mtx;
+     std::mutex _mtx_thread;
     std::atomic<bool> _finished{false};
     //State _state{State::WAITING};
     std::queue<int> _tasks; 

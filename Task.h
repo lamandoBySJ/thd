@@ -42,7 +42,7 @@ public:
             std::this_thread::sleep_for(std::chrono::seconds(1)); 
         }
          _mtx.lock();
-        auto sec=TimeTool::elapse_seconds(_now);
+        uint32_t sec=TimeTool::elapse_seconds(_now);
         _time=TimeTool::to_str_ex(TimeTool::now_to_ms());
         _mtx.unlock();
         cout <<"Task: End Time:"<< _time <<" completed within "<< sec << " s\n"<<endl;
@@ -53,7 +53,7 @@ private:
     std::string _name;
     std::mutex _mtx;
     std::atomic<int> i{10};
-    std::chrono::_V2::system_clock::time_point _now;
+    std::chrono::system_clock::time_point _now;
     std::string _time;
    
 };

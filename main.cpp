@@ -9,4 +9,5 @@ int main(){
     thd.start();
     thd.start();
     thd.start();
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 }
