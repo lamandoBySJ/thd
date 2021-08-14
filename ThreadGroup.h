@@ -38,12 +38,15 @@ public:
                 
             this->run();
             
-            std::unique_lock<std::mutex> lck{_mtx};
-            --_nthreads;
+            remove();
             
         }
     }
     virtual void run()=0;
+    void remove(){
+        std::unique_lock<std::mutex> lck{_mtx_thread};
+        --_nthreads;
+    }
     void add(){
         {
             std::lock_guard<std::mutex> lck(_mtx_thread);
