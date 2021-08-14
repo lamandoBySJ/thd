@@ -62,7 +62,6 @@ public:
     void terminate()
     {
          _finished=true;
-         static int cnt=0;
          std::lock_guard<std::mutex> lck(_mtx_thread);
          for(auto& thd:_threads){
              if(thd->joinable()){
